@@ -1,17 +1,17 @@
 import React from 'react';
-import { View, Image, Text } from 'react-native';
+import { View, Image, ImageBackground, Text } from 'react-native';
 
 import styles from './styles';
 
 const Logo = () => (
-  <View style={styles.cotainer}>
-    <Image
+  <View style={styles.container}>
+    <ImageBackground
       resizeMode="contain"
-      style={styles.cotainerImage}
+      style={styles.containerImage}
       source={require('./images/background.png')}
     >
-      <Image style={styles.image} source={require('./images/logo.png')} />
-    </Image>
+      <Image resizeMode="contain" style={styles.image} source={require('./images/logo.png')} />
+    </ImageBackground>
     <Text style={styles.text}> Currency Converter</Text>
   </View>
 );
