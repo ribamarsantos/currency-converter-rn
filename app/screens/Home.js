@@ -3,6 +3,7 @@ import { StatusBar } from 'react-native';
 import { Container } from '../components/Container';
 import { Logo } from '../components/Logo';
 import { InputWithButton } from '../components/TextInput';
+import { ClearButton } from '../components/Button/ClearButton';
 
 const TEMP_BASE_CURRENCY = 'CAD';
 const TEMP_QUOTE_CURRENCY = 'BRL';
@@ -40,6 +41,8 @@ class Home extends Component {
           value={TEMP_QUOTE_PRICE}
           editable={false}
         />
+
+        <ClearButton onPress={this.handleSwapCurrency} text="Reverse Currencies" />
       </Container>
     );
   }
