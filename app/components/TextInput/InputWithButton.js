@@ -6,7 +6,7 @@ import styles from './styles';
 
 const InputWithButton = (props) => {
   const { onPress, buttonText, editable = true } = props;
-  const underlayColor = color(styles.$buttonBackgroundColorBase).darken(styles.$buttonBackgroundColorModifier);
+  const underlayColor = color(styles.$btnBackgrdColorBase).darken(styles.$btnBackgrdColorModifier);
 
   const containerStyles = [styles.container];
   if (editable === false) {

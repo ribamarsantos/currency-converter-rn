@@ -16,19 +16,19 @@ const TEMP_CONVERSION_RATE = 0.283;
 
 class Home extends Component {
   handlePressBaseCurrency = () => {
-    console.log('base');
+    // console.log('base');
   };
 
   handlePressQuoteCurrency = () => {
-    console.log('quote');
+    // console.log('quote');
   };
 
-  handleChange = (text) => {
-    console.log('base', text);
+  handleChange = () => {
+    // console.log('base', text);
   };
 
-  handleOptionsPress = (text) => {
-    console.log('options', text);
+  handleOptionsPress = () => {
+    // console.log('options', text);
   };
 
   render() {
