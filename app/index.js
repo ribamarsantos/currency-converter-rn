@@ -1,6 +1,6 @@
 import React from 'react';
 import EStyleSheet from 'react-native-extended-stylesheet';
-
+import { AlertProvider } from './components/Alert/';
 import Navigator from './config/routes';
 
 EStyleSheet.build({
@@ -15,4 +15,8 @@ EStyleSheet.build({
   $darkText: '#343434',
 });
 
-export default () => <Navigator />;
+export default () => (
+  <AlertProvider>
+    <Navigator />
+  </AlertProvider>
+);
