@@ -1,24 +1,40 @@
 import React, { Component } from 'react';
 import { KeyboardAvoidingView, StatusBar } from 'react-native';
 import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
 import { Container } from '../components/Container';
 import { Logo } from '../components/Logo';
 import { InputWithButton } from '../components/TextInput';
 import { ClearButton } from '../components/Buttons';
 import { LastConverted } from '../components/Text';
 import { Header } from '../components/Header';
-import { swapCurrency, changeCurrency } from '../actions/currencies';
+import { swapCurrency, changeCurrencyAmount } from '../actions/currencies';
 
-const TEMP_BASE_CURRENCY = 'CAD';
-const TEMP_QUOTE_CURRENCY = 'BRL';
-const TEMP_BASE_PRICE = '100';
-const TEMP_QUOTE_PRICE = '283';
-const TEMP_LAST_CONVERTED = new Date();
-const TEMP_CONVERSION_RATE = 0.283;
-
+const mapStateToProps = (state) => {
+  const {
+    baseCurrency, quoteCurrency, amount, conversions = {},
+  } = state.currencies;
+  const conversionSelector = conversions[baseCurrency];
+  const { rates, isFetching, date } = conversionSelector;
+  return {
+    baseCurrency,
+    quoteCurrency,
+    amount,
+    conversionRate: rates[quoteCurrency] || 0,
+    lastConvertedDate: date ? new Date(date) : new Date(),
+    isFetching,
+  };
+};
 class Home extends Component {
   static propTypes = {
     navigation: PropTypes.object,
+    dispatch: PropTypes.func,
+    baseCurrency: PropTypes.string,
+    quoteCurrency: PropTypes.string,
+    amount: PropTypes.number,
+    conversionRate: PropTypes.number,
+    lastConvertedDate: PropTypes.object,
+    isFetching: PropTypes.bool,
   };
   handlePressBaseCurrency = () => {
     this.props.navigation.navigate('CurrencyList', { title: 'Base Currency' });
@@ -28,8 +44,8 @@ class Home extends Component {
     this.props.navigation.navigate('CurrencyList', { title: 'Quote Currency' });
   };
 
-  handleChange = (amount) => {
-    console.log(changeCurrency(amount));
+  handleChangeText = (text) => {
+    this.props.dispatch(changeCurrencyAmount(text));
   };
 
   handleOptionsPress = () => {
@@ -37,10 +53,23 @@ class Home extends Component {
   };
 
   handleSwapCurrency = () => {
-    console.log(swapCurrency());
+    this.props.dispatch(swapCurrency());
   };
 
   render() {
+    const {
+      baseCurrency,
+      quoteCurrency,
+      amount,
+      conversionRate,
+      lastConvertedDate,
+      isFetching,
+    } = this.props;
+
+    let quotePrice = '...';
+    if (!isFetching) {
+      quotePrice = (amount * conversionRate).toFixed(2);
+    }
     return (
       <Container>
         <StatusBar translucent={false} barStyle="light-content" />
@@ -48,23 +77,23 @@ class Home extends Component {
         <KeyboardAvoidingView behavior="padding">
           <Logo />
           <InputWithButton
-            buttonText={TEMP_BASE_CURRENCY}
+            buttonText={baseCurrency}
             onPress={this.handlePressBaseCurrency}
-            defaultValue={TEMP_BASE_PRICE}
+            defaultValue={amount.toString()}
             keyboardType="numeric"
-            onChangeText={this.handleChange}
+            onChangeText={this.handleChangeText}
           />
           <InputWithButton
-            buttonText={TEMP_QUOTE_CURRENCY}
+            buttonText={quoteCurrency}
             onPress={this.handlePressQuoteCurrency}
-            value={TEMP_QUOTE_PRICE}
+            value={quotePrice}
             editable={false}
           />
           <LastConverted
-            date={TEMP_LAST_CONVERTED}
-            base={TEMP_BASE_CURRENCY}
-            quote={TEMP_QUOTE_CURRENCY}
-            conversionRate={TEMP_CONVERSION_RATE}
+            date={lastConvertedDate}
+            base={baseCurrency}
+            quote={quoteCurrency}
+            conversionRate={conversionRate}
           />
           <ClearButton onPress={this.handleSwapCurrency} text="Reverse Currencies" />
         </KeyboardAvoidingView>
@@ -73,4 +102,4 @@ class Home extends Component {
   }
 }
 
-export default Home;
+export default connect(mapStateToProps)(Home);
