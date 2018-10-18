@@ -14,6 +14,7 @@ const mapStateToProps = (state) => {
   const {
     baseCurrency, quoteCurrency, amount, conversions = {},
   } = state.currencies;
+  const { primaryColor } = state.themes;
   const conversionSelector = conversions[baseCurrency];
   const { rates, isFetching, date } = conversionSelector;
   return {
@@ -23,6 +24,7 @@ const mapStateToProps = (state) => {
     conversionRate: rates[quoteCurrency] || 0,
     lastConvertedDate: date ? new Date(date) : new Date(),
     isFetching,
+    primaryColor,
   };
 };
 class Home extends Component {
@@ -35,13 +37,14 @@ class Home extends Component {
     conversionRate: PropTypes.number,
     lastConvertedDate: PropTypes.object,
     isFetching: PropTypes.bool,
+    primaryColor: PropTypes.string,
   };
   handlePressBaseCurrency = () => {
-    this.props.navigation.navigate('CurrencyList', { title: 'Base Currency' });
+    this.props.navigation.navigate('CurrencyList', { title: 'Base Currency', type: 'base' });
   };
 
   handlePressQuoteCurrency = () => {
-    this.props.navigation.navigate('CurrencyList', { title: 'Quote Currency' });
+    this.props.navigation.navigate('CurrencyList', { title: 'Quote Currency', type: 'quote' });
   };
 
   handleChangeText = (text) => {
@@ -64,6 +67,7 @@ class Home extends Component {
       conversionRate,
       lastConvertedDate,
       isFetching,
+      primaryColor,
     } = this.props;
 
     let quotePrice = '...';
@@ -71,23 +75,25 @@ class Home extends Component {
       quotePrice = (amount * conversionRate).toFixed(2);
     }
     return (
-      <Container>
+      <Container backgroundColor={primaryColor}>
         <StatusBar translucent={false} barStyle="light-content" />
         <Header onPress={this.handleOptionsPress} />
         <KeyboardAvoidingView behavior="padding">
-          <Logo />
+          <Logo tintColor={primaryColor} />
           <InputWithButton
             buttonText={baseCurrency}
             onPress={this.handlePressBaseCurrency}
             defaultValue={amount.toString()}
             keyboardType="numeric"
             onChangeText={this.handleChangeText}
+            textColor={primaryColor}
           />
           <InputWithButton
             buttonText={quoteCurrency}
             onPress={this.handlePressQuoteCurrency}
             value={quotePrice}
             editable={false}
+            textColor={primaryColor}
           />
           <LastConverted
             date={lastConvertedDate}
